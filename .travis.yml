@@ -2,15 +2,20 @@ sudo: required
 services:
   - docker
 before_install:
-  - docker build -t sangeeth472/react_test -f ./client/Dockerfile.dev
+  - docker build -t sangeeth472/react_test -f ./client/Dockerfile.dev ./client
 
 scripts:
   - docker run sangeeth472/react_test npm test -- --coverage
 
 after_success:
-  - docker build -t sangeeth472/client ./client
-  - docker build -t sangeeth472/nginx ./nginx
-  - docker build -t sangeeth472/server ./server
-  - docker build -t sangeeth472/worker ./worker
+  - docker build -t sangeeth472/multi-client ./client
+  - docker build -t sangeeth472/multi-nginx ./nginx
+  - docker build -t sangeeth472/multi-server ./server
+  - docker build -t sangeeth472/multi-worker ./worker
 
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" -password-stdin
+  - docker push sangeeth472/multi-client
+  - docker push sangeeth472/multi-nginx
+  - docker push sangeeth472/multi-server
+  - docker push sangeeth472/multi-worker
+
